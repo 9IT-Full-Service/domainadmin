@@ -10,7 +10,7 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
     ports:
-      - "8090:4006"
+      - "8091:4006"
     networks:
       - mpnetwork
     volumes:
@@ -24,7 +24,7 @@ services:
     environment:
       PYTHONUNBUFFERED: 1
     ports:
-      - "5006:4006"
+      - "5007:4006"
     networks:
       - mpnetwork
 
@@ -32,7 +32,7 @@ services:
     image: mongojson
     # build: mongoserver
     ports:
-      - "28017:27017"
+      - "29017:27017"
     volumes:
       - ./mongodb/data:/data/db
       - ./mongodb/backup:/data/backup
