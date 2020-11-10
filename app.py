@@ -40,7 +40,7 @@ login_manager.login_view = 'login'
 
 class User(UserMixin, db.Document):
     meta = {'collection': 'users'}
-    email = db.StringField(max_length=30)
+    email = db.StringField(max_length=50)
     password = db.StringField()
     userlevel = db.StringField()
     # name = db.StringField()
@@ -439,7 +439,7 @@ def register():
                 profileFieldUpdate(id,'verify',verifyhash)
                 profileFieldUpdate(id,'name',id)
                 # sendVerifyMail(id,verifyhash,form.email.data)
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('index'))
         else:
             print ("Nicht validiert.")
     return render_template('register.html', form=form)
