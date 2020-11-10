@@ -122,7 +122,7 @@ def dashboardProfilSave():
         }
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     r = requests.post(apiurl, json=dumps(data), headers=headers)
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('dashboardProfil'))
 
 
 @app.route('/newdomain', methods=['POST'])
