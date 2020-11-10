@@ -498,7 +498,7 @@ def login():
             if check_user:
                 if check_password_hash(check_user['password'], form.password.data):
                     login_user(check_user)
-                    return redirect(url_for('dashboard'))
+                    return redirect(url_for('index'))
     return render_template('login.html', form=form, loggedIn=loggedIn)
 
 def allowed_file(filename):
