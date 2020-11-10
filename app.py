@@ -31,7 +31,7 @@ app.config['MONGODB_SETTINGS'] = {
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db = MongoEngine(app)
-app.config["SECRET_KEY"] = "OCML3BRawWEUeaxcuKHLpw"
+app.config["SECRET_KEY"] = str(os.environ.get("SECRET_KEY"))
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 login_manager = LoginManager()
 login_manager.init_app(app)

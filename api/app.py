@@ -25,7 +25,7 @@ import datetime
 import smtplib
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "OCML3BRawWEUeaxcuKHLpw"
+app.config["SECRET_KEY"] = str(os.environ.get("SECRET_KEY"))
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/api/v1/status', methods=["GET"])
