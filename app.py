@@ -103,7 +103,7 @@ def dashboardProfil():
       userid=current_user.id,
       profileExtras=profileExtras,
       name=name,
-      categories=read_categories(),
+      # categories=read_categories(),
       loggedIn = loggedIn
     )
 
