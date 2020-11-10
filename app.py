@@ -424,6 +424,7 @@ def register():
     if request.method == 'POST':
         print ("Mail: " + form.email.data)
         if form.validate():
+            print ("Validated")
             existing_user = User.objects(email=form.email.data).first()
             if existing_user is None:
                 hashpass = generate_password_hash(form.password.data, method='sha256')
@@ -439,6 +440,8 @@ def register():
                 profileFieldUpdate(id,'name',id)
                 # sendVerifyMail(id,verifyhash,form.email.data)
                 return redirect(url_for('dashboard'))
+        else:
+            print ("Nicht validiert.")
     return render_template('register.html', form=form)
 
 @app.route('/verify/<id>/<hash>', methods=['GET'])
