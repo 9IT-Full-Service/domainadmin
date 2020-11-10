@@ -124,7 +124,12 @@ def sslexpireList():
     myclient = pymongo.MongoClient("mongodb://mongo:27017/")
     mydb = myclient["domainadmin"]
     mycol = mydb["domains"]
-    mydoc = mycol.aggregate( [ { "$sort": { "sslexpiredays": 1 } } ] )
+    mydoc = mycol.aggregate( [ { "$sort": { "sslexpiredays": 1 } },{ "$project": {"id": {"$toString": '$_id' },
+        "domain": "$domain", "registrar": "$registrar", "dnsserver": "$dnsserver",
+        "description": "$description", "dnsserver":"$dnsserver", "po": "$po", "techc": "$techc", "ssl": "$ssl",
+        "sslissuer": "$sslissuer", "ssldnsnames": "$ssldnsnames", "sslexpiredate": "$sslexpiredate",
+        "sslexpiredays": "$sslexpiredays", "commonname": "$commonname"
+         } } ] )
     list_cur = list(mydoc)
     json_data = dumps(list_cur, indent = 2, default=str)
     return json_data, 200
