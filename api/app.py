@@ -168,9 +168,9 @@ def addItem():
 def sendemail(to):
     msg = MIMEMultipart()
     message = "Test from Python via AuthSMTP"
-    password = "zkHycC1zVWmw"
-    username = "web05@9it-server.de"
-    smtphost = "mail01.9it.de:587"
+    password = str(os.environ.get("smtp_password"))
+    username = str(os.environ.get("smtp_username"))
+    smtphost = str(os.environ.get("smtp_hostname"))
     msg['From'] = "web05@9it-server.de"
     msg['To'] = to # "ruediger@kuepper.nrw"
     msg['Subject'] = "Test from Python via AuthSMTP"
@@ -186,9 +186,9 @@ def sendemail(to):
 def sendVerifyMail(id,mail,verifyhash):
     msg = MIMEMultipart()
     message = "Freischaltlink: \nhttp://localhost:8090/verify/" + id + "/" + verifyhash
-    password = "zkHycC1zVWmw"
-    username = "web05@9it-server.de"
-    smtphost = "mail01.9it.de:587"
+    password = str(os.environ.get("smtp_password"))
+    username = str(os.environ.get("smtp_username"))
+    smtphost = str(os.environ.get("smtp_hostname"))
     msg['From'] = "web05@9it-server.de"
     msg['To'] = mail # "ruediger@kuepper.nrw"
     msg['Subject'] = "Marktplatz Freischaltung "
