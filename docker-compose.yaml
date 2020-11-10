@@ -2,7 +2,7 @@ version: "3"
 services:
 
   domainadmin:
-    image: marketplace:latest
+    image: domainweb:latest
     build: .
     dns:
       - 8.8.8.8
@@ -17,7 +17,7 @@ services:
       - ./uploads:/app/static/uploads
 
   api:
-    image: mpapi:latest
+    image: domainapi:latest
     build: api
     env_file:
       - .env
