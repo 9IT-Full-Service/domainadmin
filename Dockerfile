@@ -9,6 +9,7 @@ LABEL com.example.version.is-production="yes"
 
 COPY ./app.py /app
 COPY ./templates /app/templates
+COPY ./domainadmin /app/domainadmin
 COPY ./static /app/static
 COPY ./.env /app/.env
 WORKDIR /app

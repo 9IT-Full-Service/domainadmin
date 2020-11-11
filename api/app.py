@@ -32,65 +32,6 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 def apistatus():
     return jsonify({"status":"ok"})
 
-@app.route('/api/v1/marketplace/profil/edit', methods=["POST"])
-def profilUpdate():
-    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
-    mydb = myclient["domainadmin"]
-    mycol = mydb["users"]
-    content = json.loads(request.get_json())
-    ObjId = content['id']
-    x = mycol.update_one(
-        { "_id" : ObjectId(ObjId) },
-        { "$set": {
-            'email': content['email'] }
-        } )
-    profilExtrasUpdate(content)
-    return jsonify({"result":"ok"}), 201
-
-@app.route('/api/v1/marketplace/profile/extras/<id>', methods=["GET"])
-def profileExtras(id):
-    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
-    mydb = myclient["domainadmin"]
-    mycol = mydb["profile"]
-    mydoc = mycol.find({"userid": id})
-    list_cur = list(mydoc)
-    json_data = dumps(list_cur, indent = 2, default=str)
-    return json_data, 200
-
-@app.route('/api/v1/marketplace/profile/users', methods=["GET"])
-def profileUser():
-    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
-    mydb = myclient["domainadmin"]
-    mycol = mydb["profile"]
-    mydoc = mycol.find()
-    list_cur = list(mydoc)
-    json_data = dumps(list_cur, indent = 2, default=str)
-    return json_data, 200
-
-@app.route('/api/v1/marketplace/profile/id/<email>', methods=['GET'])
-def getIdByEmail(email):
-    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
-    mydb = myclient["domainadmin"]
-    mycol = mydb["users"]
-    # mydoc = mycol.aggregate( [ { "$match" : { "_id" : ObjectId(id) } }, { "$project": {"id": {"$toString": '$_id' }, "title": "$title", "seller": "$seller", "price": "$price", "type": "$type", "category": "$category", "type": "$type", "image": "$image", "description": "$description", "active":"$active"} } ] )
-    mydoc = mycol.aggregate( [ { "$match" : { "email" : email } }, { "$project": {"id": {"$toString": '$_id' } } } ] )
-    list_cur = list(mydoc)
-    json_data = dumps(list_cur, indent = 2, default=str)
-    return json_data, 200
-
-@app.route('/api/v1/marketplace/profile/setfield/<id>/<key>/<value>', methods=['GET'])
-def setProfileField(id,key,value):
-    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
-    mydb = myclient["domainadmin"]
-    mycol = mydb["profile"]
-    print ("Test: " + id )
-    x = mycol.update_one(
-        { "userid" : id },
-        { "$set": {
-            key: value }
-        },upsert=True )
-    return jsonify({"result":"ok"}), 201
-
 @app.route('/api/v1/domainadmin/list', methods=["GET"])
 def domain_list():
     myclient = pymongo.MongoClient("mongodb://mongo:27017/")
@@ -155,7 +96,7 @@ def offerUpdate():
         } )
     return jsonify({"result":"ok"}), 201
 
-@app.route('/api/v1/domain/add', methods=["POST"])
+@app.route('/api/v1/domainadmin/add', methods=["POST"])
 def addItem():
     myclient = pymongo.MongoClient("mongodb://mongo:27017/")
     mydb = myclient["domainadmin"]
@@ -164,7 +105,7 @@ def addItem():
     x = mycol.insert(  json.loads(content) )
     return jsonify({"result":"ok"}), 201
 
-@app.route('/api/v1/marketplace/sendmail/<to>', methods=['GET'])
+@app.route('/api/v1/domainadmin/sendmail/<to>', methods=['GET'])
 def sendemail(to):
     msg = MIMEMultipart()
     message = "Test from Python via AuthSMTP"
@@ -181,41 +122,6 @@ def sendemail(to):
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
     return ( "Successfully sent email message to %s:" % (msg['To']) )
-
-@app.route('/api/v1/marketplace/profile/sendverify/<id>/<mail>/<verifyhash>', methods=['GET'])
-def sendVerifyMail(id,mail,verifyhash):
-    msg = MIMEMultipart()
-    message = "Freischaltlink: \nhttp://localhost:8090/verify/" + id + "/" + verifyhash
-    password = str(os.environ.get("smtp_password"))
-    username = str(os.environ.get("smtp_username"))
-    smtphost = str(os.environ.get("smtp_hostname"))
-    msg['From'] = "web05@9it-server.de"
-    msg['To'] = mail # "ruediger@kuepper.nrw"
-    msg['Subject'] = "Marktplatz Freischaltung "
-    msg.attach(MIMEText(message, 'plain'))
-    server = smtplib.SMTP(smtphost)
-    server.starttls()
-    server.login(username, password)
-    server.sendmail(msg['From'], msg['To'], msg.as_string())
-    server.quit()
-    return jsonify({"result":"send mail"}), 201
-    # return ( "Successfully sent email message to %s:" % (msg['To']) )
-
-@app.route('/api/v1/marketplace/profile/verify/<id>/<hash>', methods=['GET'])
-def profileVerify(id,hash):
-    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
-    mydb = myclient["marketplace"]
-    mycol = mydb["profile"]
-    mydoc = mycol.find({
-        "userid": id,
-        "verify": hash
-        }).count
-    print ("mydoc: " + str(mydoc[0]))
-    if mydoc == 1:
-        result = "True"
-    elif mydoc == 0:
-        result = "False"
-    return result, 200
 
 @app.route('/api/v1/domainadmin/sslexpire/<hostname>', methods=['GET'])
 def ssl_expiry_datetime(hostname):
@@ -246,7 +152,107 @@ def ssl_expiry_datetime(hostname):
     domainField(hostname,"sslexpiredate",expire.strftime("%Y-%m-%d %H:%M:%S"))
     value = domainField(hostname,"sslexpiredays",diff.days)
     return value
+    
 
+##################
+# Profile
+@app.route('/api/v1/domainadmin/profil/edit', methods=["POST"])
+def profilUpdate():
+    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
+    mydb = myclient["domainadmin"]
+    mycol = mydb["users"]
+    content = json.loads(request.get_json())
+    ObjId = content['id']
+    x = mycol.update_one(
+        { "_id" : ObjectId(ObjId) },
+        { "$set": {
+            'email': content['email'] }
+        } )
+    profilExtrasUpdate(content)
+    return jsonify({"result":"ok"}), 201
+
+@app.route('/api/v1/domainadmin/profile/extras/<id>', methods=["GET"])
+def profileExtras(id):
+    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
+    mydb = myclient["domainadmin"]
+    mycol = mydb["profile"]
+    mydoc = mycol.find({"userid": id})
+    list_cur = list(mydoc)
+    json_data = dumps(list_cur, indent = 2, default=str)
+    return json_data, 200
+
+@app.route('/api/v1/domainadmin/profile/users', methods=["GET"])
+def profileUser():
+    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
+    mydb = myclient["domainadmin"]
+    mycol = mydb["profile"]
+    mydoc = mycol.find()
+    list_cur = list(mydoc)
+    json_data = dumps(list_cur, indent = 2, default=str)
+    return json_data, 200
+
+@app.route('/api/v1/domainadmin/profile/id/<email>', methods=['GET'])
+def getIdByEmail(email):
+    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
+    mydb = myclient["domainadmin"]
+    mycol = mydb["users"]
+    # mydoc = mycol.aggregate( [ { "$match" : { "_id" : ObjectId(id) } }, { "$project": {"id": {"$toString": '$_id' }, "title": "$title", "seller": "$seller", "price": "$price", "type": "$type", "category": "$category", "type": "$type", "image": "$image", "description": "$description", "active":"$active"} } ] )
+    mydoc = mycol.aggregate( [ { "$match" : { "email" : email } }, { "$project": {"id": {"$toString": '$_id' } } } ] )
+    list_cur = list(mydoc)
+    json_data = dumps(list_cur, indent = 2, default=str)
+    return json_data, 200
+
+@app.route('/api/v1/domainadmin/profile/setfield/<id>/<key>/<value>', methods=['GET'])
+def setProfileField(id,key,value):
+    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
+    mydb = myclient["domainadmin"]
+    mycol = mydb["profile"]
+    print ("Test: " + id )
+    x = mycol.update_one(
+        { "userid" : id },
+        { "$set": {
+            key: value }
+        },upsert=True )
+    return jsonify({"result":"ok"}), 201
+
+@app.route('/api/v1/domainadmin/profile/sendverify/<id>/<mail>/<verifyhash>', methods=['GET'])
+def sendVerifyMail(id,mail,verifyhash):
+    msg = MIMEMultipart()
+    message = "Freischaltlink: \nhttp://localhost:8090/verify/" + id + "/" + verifyhash
+    password = str(os.environ.get("smtp_password"))
+    username = str(os.environ.get("smtp_username"))
+    smtphost = str(os.environ.get("smtp_hostname"))
+    msg['From'] = "web05@9it-server.de"
+    msg['To'] = mail # "ruediger@kuepper.nrw"
+    msg['Subject'] = "Marktplatz Freischaltung "
+    msg.attach(MIMEText(message, 'plain'))
+    server = smtplib.SMTP(smtphost)
+    server.starttls()
+    server.login(username, password)
+    server.sendmail(msg['From'], msg['To'], msg.as_string())
+    server.quit()
+    return jsonify({"result":"send mail"}), 201
+    # return ( "Successfully sent email message to %s:" % (msg['To']) )
+
+@app.route('/api/v1/domainadmin/profile/verify/<id>/<hash>', methods=['GET'])
+def profileVerify(id,hash):
+    myclient = pymongo.MongoClient("mongodb://mongo:27017/")
+    mydb = myclient["marketplace"]
+    mycol = mydb["profile"]
+    mydoc = mycol.find({
+        "userid": id,
+        "verify": hash
+        }).count
+    print ("mydoc: " + str(mydoc[0]))
+    if mydoc == 1:
+        result = "True"
+    elif mydoc == 0:
+        result = "False"
+    return result, 200
+
+
+##############################
+#
 def domainField(hostname,key,value):
     myclient = pymongo.MongoClient("mongodb://mongo:27017/")
     mydb = myclient["domainadmin"]

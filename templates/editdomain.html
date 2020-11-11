@@ -31,7 +31,7 @@
       <h3>Domain bearbeiten</h3>
       <div id="angebote" style="width: 800px;  position: relative; left: 100px;">
         <div id="metaformd">
-          <form id="metaform" action="/domain/save/{{ id }}" METHOD="POST">
+          <form id="metaform" action="/domain/edit/{{ id }}" METHOD="POST">
             {% for offer in data %}
               ID: {{ offer.id }}<br />
               Domain: <input name="domain" value="{{ offer.domain }}"><br />
