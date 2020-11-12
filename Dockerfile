@@ -12,5 +12,9 @@ COPY ./templates /app/templates
 COPY ./domainadmin /app/domainadmin
 COPY ./static /app/static
 COPY ./.env /app/.env
+# COPY requirements.txt /app/
 WORKDIR /app
-CMD ["/usr/local/bin/python3","-u","app.py"]
+# RUN pip install -r requirements.txt
+RUN pip3 uninstall -y dnspython
+RUN pip3 install --user dnspython
+CMD ["/usr/local/bin/python","-u","app.py"]

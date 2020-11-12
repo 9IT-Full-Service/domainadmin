@@ -1,8 +1,10 @@
+# dnspython
 flask
 flask_mongoengine
 flask_wtf
 flask_login
-dnspython
+#dnspython
 email_validator
 Flask-Cors==3.0.8
+Flask-Jsonpify==1.5.0
 requests

@@ -19,6 +19,8 @@ import datetime
 import sys
 import urllib, json
 import urllib.request
+# import dnspython as dns
+import dns.resolver
 
 from domainadmin.Profile import Profile
 from domainadmin.Ssl import Ssl
@@ -110,6 +112,7 @@ def dashboardProfilSave():
 
 @app.route('/newdomain', methods=["GET","POST"])
 def addDomain():
+    print ("Method: " + str(request.method))
     if request.method == 'POST':
         domain = str(request.form['domain'])
         description = request.form['description']
@@ -163,7 +166,11 @@ def viewOffer(id):
 def sslcheckAll():
     domains = Api.readApi("http://api:4006/api/v1/domainadmin/list")
     for data in domains:
+        # print ("Check SSL: " + data['domain'] )
+        # if data['ssl'] != "no" or typeof data['ssl'] !== "undefined":
         Ssl.check(data['domain'])
+        # else:
+            # print ("Wird nicht getestet: " + data['domain'] )
     return redirect(url_for('sslexpirelist'))
 
 @app.route('/sslexpirelist', methods=['GET'])
@@ -183,6 +190,20 @@ def sslexpirelist():
         data=Ssl.expirelist(),
         loggedIn = loggedIn
     )
+
+@app.route('/dns/<type>/<domain>', methods=["GET"])
+def dns(type,domain):
+    if type == "a":
+        records = Tools.dnsARecord(domain)
+    elif type == "cname":
+        records = Tools.dnsCnameRecord(domain)
+    elif type == "mx":
+        records = Tools.dnsMxRecord(domain)
+    elif type == "ns":
+        records = Tools.dnsNsRecord(domain)
+    else:
+        records = "Wrong Type (a,cname,mx,ns)"
+    return ("result: " +  str(records) )
 
 @app.route('/domain/edit/<id>', methods=['GET','POST'])
 @login_required
@@ -262,7 +283,7 @@ def login():
         loggedIn = True
     form = RegForm()
     if request.method == 'POST':
-        if form.validate():
+        # if form.validate():
             check_user = User.objects(email=form.email.data).first()
             if check_user:
                 if check_password_hash(check_user['password'], form.password.data):

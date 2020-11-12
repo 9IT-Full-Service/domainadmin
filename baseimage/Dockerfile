@@ -11,4 +11,4 @@ LABEL com.example.version.is-production="yes"
 RUN mkdir /app
 COPY requirements.txt /app/
 WORKDIR /app
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt

@@ -39,7 +39,7 @@ def domain_list():
     mycol = mydb["domains"]
     # mydoc = mycol.aggregate([ { "$match" : { "active" : "1" } },{ "$project": {"id": {"$toString": '$_id' }, "title": "$title", "seller": "$seller", "price": "$price", "type": "$type", "category": "$category", "type": "$type", "image": "$image", "description": "$description", "active":"$active"} } ] )
     mydoc = mycol.aggregate([ { "$project": {"id": {"$toString": '$_id' }, "domain": "$domain", "registrar": "$registrar",
-        "dnsserver": "$dnsserver", "description": "$description"} } ] )
+        "dnsserver": "$dnsserver", "description": "$description", "ssl": "$ssl"} } ] )
     list_cur = list(mydoc)
     json_data = dumps(list_cur, indent = 2, default=str)
     return json_data, 200
@@ -105,6 +105,10 @@ def addItem():
     x = mycol.insert(  json.loads(content) )
     return jsonify({"result":"ok"}), 201
 
+# @app.route('/api/v1/domainadmin/dns/<type>/<domain>', methods=["GET"])
+# def dns(type,domain):
+#     return jsonify({"result": Tools.dnsARecord(domain) }), 200
+
 @app.route('/api/v1/domainadmin/sendmail/<to>', methods=['GET'])
 def sendemail(to):
     msg = MIMEMultipart()
@@ -152,7 +156,7 @@ def ssl_expiry_datetime(hostname):
     domainField(hostname,"sslexpiredate",expire.strftime("%Y-%m-%d %H:%M:%S"))
     value = domainField(hostname,"sslexpiredays",diff.days)
     return value
-    
+
 
 ##################
 # Profile
