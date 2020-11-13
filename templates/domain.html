@@ -30,23 +30,30 @@
   <div class="content">
     <div id="angebote" style="width: 800px;  position: relative; left: 100px;">
       {% for offers in data %}
-       <div style="width: 800px"><a href="/domain/edit/{{ offers.id }}">{{ offers.domain }}</a></div>
-       <div style="">
-         <div style="float: right; width: 500px;">ID: {{ offers.id }}</div>
-         <div style="float: right; width: 500px;">Registrar: {{ offers.registrar }}</div>
-         <div style="float: right; width: 500px;">PO: {{ offers.po }}</div>
-         <div style="float: right; width: 500px;">Technischer Ansprechpartner: {{ offers.techc }}</div>
-         <div style="float: right; width: 500px;">SSL: <p><pre>{{ offers.ssl }}</pre></p></div>
-         <div style="float: right; width: 500px;">Issuer: <p><pre>{{ offers.sslissuer }}</pre></p></div>
-         <div style="float: right; width: 500px;">CN: <p><pre>{{ offers.commonname }}</pre></p></div>
-         <div style="float: right; width: 500px;">DnsNames: <p style="white-space:pre-wrap;">{{ offers.ssldnsnames }}</p></div>
-         <div style="float: right; width: 500px;">Expire: <p><pre>{{ offers.sslexpiredate }}</pre></p></div>
-         <div style="float: right; width: 500px;">Expire in Days: <p><pre>{{ offers.sslexpiredays }}</pre></p></div>
-         <div style="float: right; width: 500px;">DNS-Server: <p><pre>{{ offers.dnsserver }}</pre></p></div>
-         <div style="float: right; width: 500px;">Beschreibung: <p style="white-space:pre-wrap;">{{ offers.description }}</p></div>
-       </div>
+        <div style="width: 800px"><a href="/domain/edit/{{ offers.id }}">{{ offers.domain }}</a></div>
+        <!-- <div style=""> -->
+        <div style="flat: right; width: 800px;">ID: {{ offers.id }}</div>
+        <div style="flat: right; width: 800px;">Registrar: {{ offers.registrar }}</div>
+        <div style="flat: right; width: 800px;">PO: {{ offers.po }}</div>
+        <div style="flat: right; width: 800px;">Technischer Ansprechpartner: {{ offers.techc }}</div>
+        <div style="flat: right; width: 800px;">SSL: <p><pre>{{ offers.ssl }}</pre></p></div>
+        <div style="flat: right; width: 800px;">Issuer: <p><pre>{{ offers.sslissuer }}</pre></p></div>
+        <div style="flat: right; width: 800px;">CN: <p><pre>{{ offers.commonname }}</pre></p></div>
+        <div style="flat: right; width: 800px;">DnsNames: <p style="white-space:pre-wrap;">{{ offers.ssldnsnames }}</p></div>
+        <div style="flat: right; width: 800px;">Expire: <p><pre>{{ offers.sslexpiredate }}</pre></p></div>
+        <div style="flat: right; width: 800px;">Expire in Days: <p><pre>{{ offers.sslexpiredays }}</pre></p></div>
+        <div style="flat: right; width: 800px;">DNS-Server: <p><pre>{{ offers.dnsserver }}</pre></p></div>
+        <div style="flat: right; width: 800px;">Beschreibung: <p style="white-space:pre-wrap;">{{ offers.description }}</p></div>
+        <div style="flat: right; width: 800px;"><button class="dnsrequest">DNS Abfragen</button><p style="white-space:pre-wrap;"><pre class="dnsresponse"></pre></p></div>
+        <!-- </div> -->
+        <script>
+          $( ".dnsrequest" ).click(function() {
+            $.get( "/dns/{{ offers.domain }}", function( data ) {
+              $( ".dnsresponse" ).html( data );
+            });
+          });
+       </script>
        <div style="clear: both;"></div>
-       <hr>
       {% endfor %}
     </div>
   </div>

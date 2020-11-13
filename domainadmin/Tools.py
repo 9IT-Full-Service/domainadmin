@@ -10,6 +10,21 @@ class Tools():
         data = json.loads(response.read())
         return data
 
+    def dnsQuery(domain):
+        value=""
+        types=['CNAME','A','MX','NS','TXT','SPF']
+        for type in types:
+            if type == "MX" or type == "NS":
+                domain='.'.join(domain.split('.')[-2:])
+
+            try:
+                result = dns.resolver.resolve(domain, type)
+                for rdata in result:
+                    value += ("{}: {} \n".format(type, rdata ))
+            except Exception as e:
+                value+=str(e) + "\n"
+        return value
+
     def dnsARecord(domain):
         count=0
         records = {}

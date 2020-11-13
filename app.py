@@ -191,19 +191,10 @@ def sslexpirelist():
         loggedIn = loggedIn
     )
 
-@app.route('/dns/<type>/<domain>', methods=["GET"])
-def dns(type,domain):
-    if type == "a":
-        records = Tools.dnsARecord(domain)
-    elif type == "cname":
-        records = Tools.dnsCnameRecord(domain)
-    elif type == "mx":
-        records = Tools.dnsMxRecord(domain)
-    elif type == "ns":
-        records = Tools.dnsNsRecord(domain)
-    else:
-        records = "Wrong Type (a,cname,mx,ns)"
-    return ("result: " +  str(records) )
+@app.route('/dns/<domain>', methods=["GET"])
+def dns(domain):
+    records = Tools.dnsQuery(domain)
+    return (str(records) )
 
 @app.route('/domain/edit/<id>', methods=['GET','POST'])
 @login_required
