@@ -138,8 +138,14 @@ def ssl_expiry_datetime(hostname):
         server_hostname=hostname,
     )
     conn.settimeout(30.0)
-    conn.connect((hostname, 443))
-    ssl_info = conn.getpeercert()
+    try:
+        conn.connect((hostname, 443))
+    except Exception as e:
+        return jsonify({"result": "Domain nicht erreichbar." + str(e)})
+    try:
+        ssl_info = conn.getpeercert()
+    except Exception as e:
+        return  jsonify({"result": "Cert kann nicht abgerufen werden." + str(e)})
     dns = ""
     issuer = ssl_info['issuer']
     subject = ssl_info['subject']
