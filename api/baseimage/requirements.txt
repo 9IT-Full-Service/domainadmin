@@ -30,3 +30,5 @@ pymongo
 flask-swagger
 pymongo
 python-dotenv
+flask_mongoengine
+flask_login

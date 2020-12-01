@@ -30,7 +30,9 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/api/v1/status', methods=["GET"])
 def apistatus():
-    return jsonify({"status":"ok"})
+    import os.path, time
+    modification = ("last modified: %s" % time.ctime(os.path.getmtime(__file__)))
+    return jsonify({"status":"ok", "version": "0.8", "edit": modification })
 
 @app.route('/api/v1/domainadmin/list', methods=["GET"])
 def domain_list():
@@ -53,7 +55,7 @@ def marktplace(id):
         "domain": "$domain", "registrar": "$registrar", "dnsserver": "$dnsserver",
         "description": "$description", "dnsserver":"$dnsserver", "po": "$po", "techc": "$techc", "ssl": "$ssl",
         "sslissuer": "$sslissuer", "ssldnsnames": "$ssldnsnames", "sslexpiredate": "$sslexpiredate",
-        "sslexpiredays": "$sslexpiredays", "commonname": "$commonname"
+        "sslexpiredays": "$sslexpiredays", "acmehttp": "1", "php": "$php", "phpversion":"7.4", "cid": "12001", "commonname": "$commonname"
          } } ] )
     list_cur = list(mydoc)
     json_data = dumps(list_cur, indent = 2, default=str)
@@ -311,4 +313,5 @@ def to_pretty_json(value):
 app.jinja_env.filters['tojson_pretty'] = to_pretty_json
 
 if __name__ == "__main__":
-  app.run(debug=True,host='0.0.0.0', port=4006)
+    PORT=os.environ.get("APIPORT")
+    app.run(debug=True,host='0.0.0.0', port=PORT)
