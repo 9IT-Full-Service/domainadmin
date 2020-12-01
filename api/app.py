@@ -55,7 +55,7 @@ def marktplace(id):
         "domain": "$domain", "registrar": "$registrar", "dnsserver": "$dnsserver",
         "description": "$description", "dnsserver":"$dnsserver", "po": "$po", "techc": "$techc", "ssl": "$ssl",
         "sslissuer": "$sslissuer", "ssldnsnames": "$ssldnsnames", "sslexpiredate": "$sslexpiredate",
-        "sslexpiredays": "$sslexpiredays", "acmehttp": "1", "php": "$php", "phpversion":"7.4", "cid": "12001", "commonname": "$commonname"
+        "sslexpiredays": "$sslexpiredays", "acmehttp": "$acmehttp", "php": "$php", "phpversion":"$phpversion", "cid": "$cid", "commonname": "$commonname"
          } } ] )
     list_cur = list(mydoc)
     json_data = dumps(list_cur, indent = 2, default=str)
@@ -94,6 +94,10 @@ def offerUpdate():
             'po': content['po'],
             'techc': content['techc'],
             'ssl': content['ssl'],
+            "acmehttp": content['acmehttp'],
+            "php": content['php'],
+            "phpversion": content['phpversion'],
+            "cid": content['cid'],
            }
         } )
     return jsonify({"result":"ok"}), 201
