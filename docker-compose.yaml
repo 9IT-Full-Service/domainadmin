@@ -23,6 +23,7 @@ services:
       - .env
     environment:
       PYTHONUNBUFFERED: 1
+      APIPORT: 4006
     ports:
       - "5007:4006"
     networks:
