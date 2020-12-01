@@ -41,6 +41,10 @@
               SSL: <br><textarea rows="6" cols="120" name="ssl">{{ offer.ssl }}</textarea><br />
               DNS-Server: <br><textarea rows="6" cols="120" name="dnsserver">{{ offer.dnsserver }}</textarea><br />
               Beschreibung: <br><textarea rows="10" cols="120" name="description">{{offer.description}}</textarea><br />
+              ACME http: <input name="acmehttp" value="{{ offer.acmehttp }}"><br />
+              PHP: <input name="php" value="{{ offer.php }}"><br />
+              PHP-Version : <input name="phpversion" value="{{ offer.phpversion }}"><br />
+              CID: <input name="cid" value="{{ offer.cid }}"><br />
             {% endfor %}
             <!-- <input type="hidden" name="id" value="{{ id }}"> -->
             <button type="reset">Eingaben zurücksetzen</button>

@@ -207,6 +207,10 @@ def domainEdit(id):
         po = request.form['po']
         techc = request.form['techc']
         ssl = request.form['ssl']
+        acmehttp = request.form['acmehttp']
+        php = request.form['php']
+        phpversion = request.form['phpversion']
+        cid = request.form['cid']
         apiurl = "http://api:4006/api/v1/domainadmin/domain/edit"
         data = {
             'id': id,
@@ -217,6 +221,10 @@ def domainEdit(id):
             'po': po,
             'techc': techc,
             'ssl': ssl,
+            "acmehttp": acmehttp,
+            "php": php,
+            "phpversion": phpversion,
+            "cid": cid,
             }
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         r = requests.post(apiurl, json=dumps(data), headers=headers)
